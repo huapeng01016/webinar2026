@@ -1,0 +1,53 @@
+*! 1.0.0  18/may/2026
+
+version 19
+/*
+When you publish your work, it is typical to include a table of descriptive statistics, commonly known as a "Table 1"; this provides your reader with some information about your sample. For example, you may want to present some demographics, such as average age and average income. You might also compare these characteristics across groups, such as regions or fields of occupation.
+
+In Stata, you can use dtable to create these and many other variations of a "Table 1" and export them to many formats. For instance, we can create a table and export it to Excel:
+*/
+
+//1.
+/*
+To get started, we load data from the Second National Health and Nutrition Examination Survey (NHANES II) (McDowell et al. 1981). We want summary statistics for the variables specified but separately for each category of diabetes. Note that we use factor-variable notation to indicate that sex and race are categorical variables. And we export the table to the file table1.html:
+*/
+webuse nhanes2l, clear
+dtable age weight bpsystol i.sex i.race, by(diabetes) export(table1.html, replace)
+
+
+/*
+we format the means and standard deviations to two decimal places, add a title, and export our final table to an HTML file:
+*/
+dtable age weight bpsystol i.sex i.race, by(diabetes, nototals tests)
+continuous(age, test(none)) factor(race, test(none))
+sample(, statistics(freq) place(seplabels)) sformat("(N=%s)" frequency)
+note(Total sample: N = 10,349) column(by(hide))
+nformat(%7.2f mean sd) title(Table 1. Demographics) export(table1.html, replace)
+
+/*
+Further customization using collect
+While dtable is designed to create and export a table in one step, you can customize these tables further with the collect suite of commands. Below, we change the color of the borders and the background color for alternating rows in our table:
+*/
+
+* Change the border color above the corner and column headers to cyan
+collect style cell border_block[column-header corner], border(top, color(cyan))
+
+* Change the border color above and below the results and row headers to cyan
+collect style cell border_block[row-header item], border(bottom, color(cyan)) border(top, color(cyan))
+
+* Make the column headers bold
+collect style cell cell_type[column-header], font(, bold)
+
+/*
+Change the background color to cyan for the rows corresponding to N,
+BMI, and cholesterol
+*/
+collect style cell var[_N bmi tcresult], shading(background(cyan))
+
+/*
+Finally, we specify that the width of the columns be resized to fit the table contents and export the table:
+*/
+
+collect style putdocx, layout(autofitcontents)
+
+collect export table2.docx, replace
