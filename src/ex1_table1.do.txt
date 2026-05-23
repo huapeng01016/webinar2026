@@ -11,7 +11,7 @@ In Stata, you can use dtable to create these and many other variations of a "Tab
 /*
 To get started, we load data from the Second National Health and Nutrition Examination Survey (NHANES II) (McDowell et al. 1981). We want summary statistics for the variables specified but separately for each category of diabetes. Note that we use factor-variable notation to indicate that sex and race are categorical variables. And we export the table to the file table1.html:
 */
-webuse nhanes2l, clear
+use ../nhanes2l.dta, clear
 dtable age weight bpsystol i.sex i.race, by(diabetes) export(table1.html, replace)
 
 
