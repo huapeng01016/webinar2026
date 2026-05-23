@@ -1,6 +1,6 @@
 *! 1.0.0  18/may/2026
 
-version 19
+version 18
 /*
 When you publish your work, it is typical to include a table of descriptive statistics, commonly known as a "Table 1"; this provides your reader with some information about your sample. For example, you may want to present some demographics, such as average age and average income. You might also compare these characteristics across groups, such as regions or fields of occupation.
 
