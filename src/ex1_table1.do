@@ -2,25 +2,30 @@
 
 version 18
 /*
-Include a table of descriptive statistics for data from the 
-Second National Health and Nutrition Examination Survey 
-(NHANES II) (McDowell et al. 1981). 
-
-Use -dtable- to create the table and export it to many formats. 
-*/
+ * Include a table of descriptive statistics for data from the 
+ * Second National Health and Nutrition Examination Survey 
+ * (NHANES II) (McDowell et al. 1981). 
+ * 
+ * Use -dtable- to create the table and export it to many formats. 
+ */
 
 use ../data/nhanes2l.dta, clear
 
 /*
-Format the means and standard deviations to two decimal places, add 
-a title, and export the final table to an HTML file:
-*/
-dtable age weight bpsystol i.sex i.race, by(diabetes, nototals tests) ///
-    continuous(age, test(none)) factor(race, test(none))              ///
-    sample(, statistics(freq) place(seplabels))                       /// 
-	sformat("(N=%s)" frequency) note(Total sample: N = 10,349)        ///
-	column(by(hide)) nformat(%7.2f mean sd)                           ///
-	title(Table 1. Demographics) export(../docs/table1.html, replace)
+ * Format the means and standard deviations to two decimal places, add 
+ * a title, and export the final table to an HTML file:
+ */
+dtable age weight bpsystol i.sex i.race,        ///
+    by(diabetes, nototals tests)                ///
+    continuous(age, test(none))                 ///
+    factor(race, test(none))                    ///
+    sample(, statistics(freq) place(seplabels)) /// 
+    column(by(hide))                            ///
+    sformat("(N=%s)" frequency)                 ///
+    nformat(%7.2f mean sd)                      ///
+    note(Total sample: N = 10,349)              ///
+    title(Table 1. Demographics)                ///
+    export(../docs/table1.html, replace)
 
 /*
 Use -collect- Change the color of the borders and the background color 

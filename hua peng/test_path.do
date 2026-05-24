@@ -1,0 +1,1 @@
+display "Test file path current working directory = |`c(pwd)'|" 
