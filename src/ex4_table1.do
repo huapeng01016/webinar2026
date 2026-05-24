@@ -35,28 +35,53 @@ if `"`export_file'"' == "" {
 }
 
 di in red "|`dir'/`name'| |`replace'| "
-
-local total_sample "10,349"
 		  
 use ../data/nhanes2l.dta, clear
 
-/*
-Format the means and standard deviations to two decimal places, add 
-a title, and export the final table to an HTML file:
-*/
-dtable age weight bpsystol i.sex i.race, by(diabetes, nototals tests)  ///
-    continuous(age, test(none)) factor(race, test(none))               ///
-    sample(, statistics(freq) place(seplabels))                        /// 
-	sformat("(N=%s)" frequency) note(Total sample: N = `total_sample') ///
-	column(by(hide)) nformat(%7.2f mean sd)                            ///
-	title(Table 1. Demographics) export(`dir'/`export_file'.html, `replace')
+/* 
+ * Check variables
+ */
+
+confirm numeric variable age weight bpsystol sex race diabetes
 
 /*
-Use -collect- Change the color of the borders and the background color 
-for alternating rows in our table. 
+ * Check if output files exits
+ */
+if "`replace'" == "" {
+	 confirm new file "`dir'/`export_file'.html"
+	 confirm new file "`dir'/`export_file'.docx"
+	 confirm new file "`dir'/`export_file'.md"
+	 confirm new file "`dir'/`export_file'.pdf"
+}
+ 
+/* 
+ * Get sample size
+ */ 
+count if !missing(diabetes)
+local total_sample = strofreal(`r(N)', "%9.0gc")
 
-Then export it to different formats
-*/
+/*
+ * Format the means and standard deviations to 
+ * two decimal places, add a title, and export 
+ * the final table to an HTML file:
+ */
+dtable age weight bpsystol i.sex i.race,        ///
+    by(diabetes, nototals tests)                ///
+    continuous(age, test(none))                 ///
+	factor(race, test(none))                    ///
+    sample(, statistics(freq) place(seplabels)) /// 
+	sformat("(N=%s)" frequency)                 ///
+    nformat(%7.2f mean sd)                      ///	
+	note(Total sample: N = `total_sample')      ///
+	column(by(hide))                            ///
+	title(Table 1. Demographics)                ///
+	export("`dir'/`export_file'.html", `replace')
+
+/*
+ * Use -collect- Change the color of the borders 
+ * and the background color for alternating rows 
+ * in our table. Then export it to different formats
+ */
 
 * Change the border color above the corner and column headers to cyan
 collect style cell border_block[column-header corner], border(top, color(cyan))
@@ -69,14 +94,15 @@ collect style cell border_block[row-header item], border(bottom, ///
 collect style cell cell_type[column-header], font(, bold)
 
 /*
-Change the background color to cyan for the rows corresponding to N,
-BMI, and cholesterol
-*/
+ * Change the background color to cyan for the rows corresponding to N,
+ * BMI, and cholesterol
+ */
 collect style cell var[_N bmi tcresult], shading(background(cyan))
 
 /*
-Finally, we specify that the width of the columns be resized to fit the table contents and export the table:
-*/
+ * Finally, we specify that the width of the columns be resized to 
+ * fit the table contents and export the table:
+ */
 
 collect style putdocx, layout(autofitcontents)
 
