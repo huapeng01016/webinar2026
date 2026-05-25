@@ -1,4 +1,4 @@
-*! version 1.0.0  24may2026
+!* version 1.0.0  24may2026
 
 clear
 set obs 3
@@ -12,7 +12,4 @@ list
 gen double sum_x = sum(x)
 gen double sum_y = sum(y)
 list
-capture noi assert sum_x == sum_y in 3
-
-gen double diff = sum_x - sum_y in 3
-list
+assert sum_x == sum_y in 3
