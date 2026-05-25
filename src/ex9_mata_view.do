@@ -8,9 +8,9 @@ version 16
  
 sysuse auto, clear
 mata:
-/* Create mata matrix from Stata data */
-y    = st_data(., "mpg")
-X    = st_data(., "price weight trunk")
+/* Create mata view into Stata data */
+st_view(y=., ., "mpg")
+st_view(X=., ., "price weight trunk")
 
 /* Compute X'X */
 XTX  = cross(X, X)
